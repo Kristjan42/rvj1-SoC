@@ -13,6 +13,19 @@ module fifo #(
     output logic                empty_o
     
 );
+// fifo #(
+//     .DEPTH(8),
+//     .WIDTH(32)
+// ) fifo_inst (
+//     .clk_i(clk_i),
+//     .rstn_i(rstn_i),
+//     .wr_en_i(wr_en_i),
+//     .rd_en_i(rd_en_i),
+//     .w_data_i(w_data_i),
+//     .r_data_o(r_data_o),
+//     .full_o(full_o),
+//     .empty_o(empty_o)
+// );
 
 reg [$clog2(DEPTH)-1:0] wr_ptr;
 reg [$clog2(DEPTH)-1:0] rd_ptr;
