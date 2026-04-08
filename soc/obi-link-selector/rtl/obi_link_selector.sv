@@ -24,7 +24,8 @@ module obi_link_selector #(
     
 
 // OBI A decoder signals
-    input   logic [SUBORDINATES-1:0] obi_a_sel_i,
+    input   logic [$clog2(SUBORDINATES)-1:0]    obi_a_sel_i,
+    input   logic                               address_map_err_i,
 
 // OBI R decoder signals
     input   logic [SUBORDINATES-1:0] obi_r_sel_i,
@@ -35,22 +36,22 @@ module obi_link_selector #(
 // OBI aid generator signals
     output  logic   gen_next_o    
 );
+
 // OBI A channel switching logic
     always_comb begin
         obi_agnt_o = '0;
-        for (int i=0; i<SUBORDINATES; i++) begin
-            if (obi_a_sel_i[i] == 1) begin
-                    obi_a_channels_o[i] = obi_a_i;
-                    obi_agnt_o = obi_agnt_array_i[i]; 
-                end else begin
-                    obi_a_channels_o[i] = '0;
-                end
+        obi_a_channels_o = '{default: '0};
+        obi_a_channels_o[obi_a_sel_i] = obi_a_i;
+        obi_agnt_o = obi_agnt_array_i[obi_a_sel_i];
+        if (address_map_err_i) begin
+            // TODO handle err
         end
     end
 
 // OBI R channel switching logic        
     always_comb begin
         obi_r_o = '0;
+        // TODO handle err
         for (int j = 0; j<SUBORDINATES; j++) begin
                     rid_array_o[j] = obi_r_channels_i[j].obi_rid;
                     if (obi_r_sel_i == (1 << j)) begin

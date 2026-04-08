@@ -1,5 +1,6 @@
 import soc_defines::obi_a;
 import soc_defines::obi_r;
+import soc_defines::addr_map;
 
 // OBI manager
 module obi_manager #(
@@ -63,7 +64,7 @@ module obi_manager #(
     assign obi_rid_o            =   obi_r.obi_rid;
 
 // Selector signals for dmux and mux
-    logic [SUBORDINATES-1:0] obi_a_sel;
+    logic [$clog2(SUBORDINATES)-1:0] obi_a_sel;
     logic [SUBORDINATES-1:0] obi_r_sel;
 
 // Enable signals for generating next aid and setting next rid
@@ -72,6 +73,13 @@ module obi_manager #(
 
 // Array of rid signals used to compare for mux switching
     logic [ID_WIDTH-1:0]     rid_array[SUBORDINATES];
+
+// R decoder
+    // TODO propagate address_maps 
+    logic address_map_err;
+    soc_defines::addr_map [1:0]  address_maps;
+    assign address_maps[0] = '{3'd0,32'h0000_0000,32'h4000_0000};
+    assign address_maps[1] = '{3'd1,32'h4000_0000,32'h4000_0000};
 
 // OBI link selector
     obi_link_selector #(
@@ -87,6 +95,7 @@ module obi_manager #(
         .obi_agnt_array_i(obi_agnt_array_i),
         .obi_rready_array_o(obi_rready_array_o),
         .obi_a_sel_i(obi_a_sel),
+        .address_map_err_i(address_map_err),
         .obi_r_sel_i(obi_r_sel),
         .set_next_o(set_next),
         .rid_array_o(rid_array),
@@ -104,8 +113,13 @@ module obi_manager #(
     );
 
 // OBI A channel decoder 
-    obi_a_decoder #(SUBORDINATES, ADDR_WIDTH, 32'h80000000) obi_a_decoder_inst (
+    obi_a_decoder #(SUBORDINATES, ADDR_WIDTH, 2) obi_a_decoder_inst (
         .req_address_i(obi_aadr_i),
+        .address_maps_i(address_maps),
+        .config_ready_i(1'b1),
+        .default_sel_en_i('0),
+        .default_sel_i(3'd2),
+        .address_map_err_o(address_map_err),
         .obi_a_sel_o(obi_a_sel)
     );
 
