@@ -1,0 +1,997 @@
+{
+  "extensionVersion": "1.5.1",
+  "fileName": "/foss/designs/rvj1-SoC/soc/obi-crossbar/tb/sim_build/dump.fst",
+  "markerTime": 57000,
+  "altMarkerTime": null,
+  "selectedSignal": {
+    "name": "$rootio.lsu_req_valid_i",
+    "msb": -1,
+    "lsb": -1
+  },
+  "zoomRatio": 0.0088343631661613,
+  "scrollLeft": 11531,
+  "displayedSignals": [
+    {
+      "dataType": "signal-group",
+      "groupName": "top",
+      "collapseState": 2,
+      "children": [
+        {
+          "dataType": "netlist-variable",
+          "netlistId": 1,
+          "name": "$rootio.rstn_i",
+          "numberFormat": "binary",
+          "colorIndex": 0,
+          "rowHeight": 1,
+          "verticalScale": 1,
+          "nameType": "fullPath",
+          "customName": "rstn_i",
+          "renderType": "binary",
+          "valueLinkCommand": ""
+        },
+        {
+          "dataType": "netlist-variable",
+          "netlistId": 0,
+          "name": "$rootio.clk_i",
+          "numberFormat": "binary",
+          "colorIndex": 0,
+          "rowHeight": 1,
+          "verticalScale": 1,
+          "nameType": "fullPath",
+          "customName": "clk_i",
+          "renderType": "binary",
+          "valueLinkCommand": ""
+        },
+        {
+          "dataType": "signal-group",
+          "groupName": "ifu mapped",
+          "collapseState": 1,
+          "children": [
+            {
+              "dataType": "signal-group",
+              "groupName": "req",
+              "collapseState": 2,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 7,
+                  "name": "$rootio.ifu_req_ready_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_req_ready_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 6,
+                  "name": "$rootio.ifu_req_valid_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_req_valid_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 2,
+                  "name": "$rootio.ifu_req_addr_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_req_addr_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 3,
+                  "name": "$rootio.ifu_req_data_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_req_data_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 4,
+                  "name": "$rootio.ifu_req_strobe_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_req_strobe_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 5,
+                  "name": "$rootio.ifu_req_write_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_req_write_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                }
+              ]
+            },
+            {
+              "dataType": "signal-separator",
+              "label": "---",
+              "rowHeight": 1
+            },
+            {
+              "dataType": "signal-group",
+              "groupName": "rsp",
+              "collapseState": 2,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 8,
+                  "name": "$rootio.ifu_rsp_data_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_rsp_data_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 9,
+                  "name": "$rootio.ifu_rsp_error_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_rsp_error_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 11,
+                  "name": "$rootio.ifu_rsp_id_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_rsp_id_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 12,
+                  "name": "$rootio.ifu_rsp_ready_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_rsp_ready_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 10,
+                  "name": "$rootio.ifu_rsp_valid_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "ifu_rsp_valid_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "dataType": "signal-group",
+          "groupName": "lsu mapped",
+          "collapseState": 2,
+          "children": [
+            {
+              "dataType": "signal-group",
+              "groupName": "req",
+              "collapseState": 2,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 18,
+                  "name": "$rootio.lsu_req_ready_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_req_ready_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 17,
+                  "name": "$rootio.lsu_req_valid_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_req_valid_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 13,
+                  "name": "$rootio.lsu_req_addr_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_req_addr_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 14,
+                  "name": "$rootio.lsu_req_data_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_req_data_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 15,
+                  "name": "$rootio.lsu_req_strobe_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_req_strobe_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 16,
+                  "name": "$rootio.lsu_req_write_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_req_write_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                }
+              ]
+            },
+            {
+              "dataType": "signal-separator",
+              "label": "---",
+              "rowHeight": 1
+            },
+            {
+              "dataType": "signal-group",
+              "groupName": "rsp",
+              "collapseState": 2,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 23,
+                  "name": "$rootio.lsu_rsp_ready_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_rsp_ready_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 21,
+                  "name": "$rootio.lsu_rsp_valid_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_rsp_valid_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 19,
+                  "name": "$rootio.lsu_rsp_data_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_rsp_data_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 20,
+                  "name": "$rootio.lsu_rsp_error_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_rsp_error_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 22,
+                  "name": "$rootio.lsu_rsp_id_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "lsu_rsp_id_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "dataType": "signal-group",
+          "groupName": "s0 obi",
+          "collapseState": 1,
+          "children": [
+            {
+              "dataType": "signal-group",
+              "groupName": "A chan",
+              "collapseState": 1,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 31,
+                  "name": "$rootio.obi_00_agnt_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_agnt_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 28,
+                  "name": "$rootio.obi_00_areq_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_areq_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 24,
+                  "name": "$rootio.obi_00_aaddr_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_aaddr_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 26,
+                  "name": "$rootio.obi_00_abe_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_abe_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 29,
+                  "name": "$rootio.obi_00_aid_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_aid_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 25,
+                  "name": "$rootio.obi_00_awdata_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_awdata_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 27,
+                  "name": "$rootio.obi_00_awe_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_awe_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 30,
+                  "name": "$rootio.obi_00_mid_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_mid_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                }
+              ]
+            },
+            {
+              "dataType": "signal-separator",
+              "label": "---",
+              "rowHeight": 1
+            },
+            {
+              "dataType": "signal-group",
+              "groupName": "R chan",
+              "collapseState": 1,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 36,
+                  "name": "$rootio.obi_00_rready_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_rready_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 35,
+                  "name": "$rootio.obi_00_rvalid_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_rvalid_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 32,
+                  "name": "$rootio.obi_00_rdata_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_rdata_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 33,
+                  "name": "$rootio.obi_00_rerr_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_rerr_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 34,
+                  "name": "$rootio.obi_00_rid_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_00_rid_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "dataType": "signal-group",
+          "groupName": "s1 obi",
+          "collapseState": 1,
+          "children": [
+            {
+              "dataType": "signal-group",
+              "groupName": "A chan",
+              "collapseState": 1,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 44,
+                  "name": "$rootio.obi_10_agnt_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_agnt_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 41,
+                  "name": "$rootio.obi_10_areq_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_areq_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 37,
+                  "name": "$rootio.obi_10_aaddr_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_aaddr_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 39,
+                  "name": "$rootio.obi_10_abe_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_abe_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 42,
+                  "name": "$rootio.obi_10_aid_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_aid_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 38,
+                  "name": "$rootio.obi_10_awdata_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_awdata_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 40,
+                  "name": "$rootio.obi_10_awe_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_awe_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 43,
+                  "name": "$rootio.obi_10_mid_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_mid_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                }
+              ]
+            },
+            {
+              "dataType": "signal-separator",
+              "label": "---",
+              "rowHeight": 1
+            },
+            {
+              "dataType": "signal-group",
+              "groupName": "R chan",
+              "collapseState": 2,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 49,
+                  "name": "$rootio.obi_10_rready_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_rready_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 48,
+                  "name": "$rootio.obi_10_rvalid_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_rvalid_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 45,
+                  "name": "$rootio.obi_10_rdata_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_rdata_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 46,
+                  "name": "$rootio.obi_10_rerr_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_rerr_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 47,
+                  "name": "$rootio.obi_10_rid_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_10_rid_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "dataType": "signal-group",
+          "groupName": "s2 obi",
+          "collapseState": 1,
+          "children": [
+            {
+              "dataType": "signal-group",
+              "groupName": "A chan",
+              "collapseState": 2,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 50,
+                  "name": "$rootio.obi_11_aaddr_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_aaddr_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 52,
+                  "name": "$rootio.obi_11_abe_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_abe_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 57,
+                  "name": "$rootio.obi_11_agnt_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_agnt_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 55,
+                  "name": "$rootio.obi_11_aid_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_aid_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 54,
+                  "name": "$rootio.obi_11_areq_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_areq_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 51,
+                  "name": "$rootio.obi_11_awdata_o",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_awdata_o",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 53,
+                  "name": "$rootio.obi_11_awe_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_awe_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 56,
+                  "name": "$rootio.obi_11_mid_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 4,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_mid_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                }
+              ]
+            },
+            {
+              "dataType": "signal-separator",
+              "label": "---",
+              "rowHeight": 1
+            },
+            {
+              "dataType": "signal-group",
+              "groupName": "R chan",
+              "collapseState": 1,
+              "children": [
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 58,
+                  "name": "$rootio.obi_11_rdata_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_rdata_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 59,
+                  "name": "$rootio.obi_11_rerr_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_rerr_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 60,
+                  "name": "$rootio.obi_11_rid_i",
+                  "numberFormat": "hexadecimal",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_rid_i",
+                  "renderType": "multiBit",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 62,
+                  "name": "$rootio.obi_11_rready_o",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_rready_o",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                },
+                {
+                  "dataType": "netlist-variable",
+                  "netlistId": 61,
+                  "name": "$rootio.obi_11_rvalid_i",
+                  "numberFormat": "binary",
+                  "colorIndex": 5,
+                  "rowHeight": 1,
+                  "verticalScale": 1,
+                  "nameType": "fullPath",
+                  "customName": "obi_11_rvalid_i",
+                  "renderType": "binary",
+                  "valueLinkCommand": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dataType": "netlist-variable",
+      "netlistId": 381,
+      "name": "obi_xbar_testing_module.xbar.obi_lsu_manager.obi_aid_generator_inst.id",
+      "numberFormat": "hexadecimal",
+      "colorIndex": 0,
+      "rowHeight": 1,
+      "verticalScale": 1,
+      "nameType": "fullPath",
+      "customName": "id",
+      "renderType": "multiBit",
+      "valueLinkCommand": ""
+    },
+    {
+      "dataType": "netlist-variable",
+      "netlistId": 371,
+      "name": "obi_xbar_testing_module.xbar.obi_lsu_manager.obi_a_decoder_inst.obi_a_sel_o",
+      "numberFormat": "hexadecimal",
+      "colorIndex": 0,
+      "rowHeight": 1,
+      "verticalScale": 1,
+      "nameType": "fullPath",
+      "customName": "obi_a_sel_o",
+      "renderType": "multiBit",
+      "valueLinkCommand": ""
+    }
+  ]
+}
