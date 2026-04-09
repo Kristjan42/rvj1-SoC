@@ -3,6 +3,7 @@
     parameter int NBytes = DATA_WIDTH / 8;
     parameter int MANAGERS = 2;
     parameter int ID_WIDTH = 32;
+    parameter int SUBORDINATES = 8;
 
 package soc_defines;
 
@@ -24,6 +25,12 @@ package soc_defines;
         logic                    obi_rerr;
         logic [ID_WIDTH-1:0]     obi_rid;
     } obi_r;
+
+    typedef struct packed  {  
+        logic [$clog2(SUBORDINATES)-1:0]    idx;
+        logic [ADDR_WIDTH-1:0]              base;
+        logic [ADDR_WIDTH-1:0]              mask;
+    } addr_map;
 
 endpackage
 
