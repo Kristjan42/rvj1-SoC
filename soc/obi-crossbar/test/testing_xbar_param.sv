@@ -12,7 +12,9 @@ module testing_xbar_param #(
     parameter int DATA_WIDTH = 32,
     parameter int MANAGERS = 2,
     parameter int SUBORDINATES = 8,
-    parameter int ID_WIDTH = 32,
+    parameter int FIFO_DEPTH = 1024,
+    parameter int ID_WIDTH = $clog2(FIFO_DEPTH*SUBORDINATES)+1,    // ID_WIDTH has to be >$clog2(FIFO_DEPTH*SUBORDINATES)
+    
 
     parameter bit [SUBORDINATES-1:0] [MANAGERS-1:0] Connectivity = '1
 ) 
@@ -136,7 +138,7 @@ module testing_xbar_param #(
 
     localparam int NBytes = DATA_WIDTH / 8;
     localparam int MANAGERS_CONS = MANAGERS; // No. of managers connected to slave
-    localparam int FIFO_DEPTH = 1024;
+    //localparam int FIFO_DEPTH = 1024;
 
     // OBI A channels S0-Masters
     soc_defines::obi_a [SUBORDINATES-1:0] [MANAGERS-1:0] obi_a_subs_matrix;
@@ -184,6 +186,7 @@ module testing_xbar_param #(
             .obi_awe_i(obi_a_chans_mgr[i].obi_awe),
             .obi_abe_i(obi_a_chans_mgr[i].obi_abe),
             .obi_awdata_i(obi_a_chans_mgr[i].obi_awdata),
+            .obi_aid_i(obi_a_chans_mgr[i].obi_aid),
             .obi_agnt_o(obi_a_chans_mgr[i].obi_agnt),
             // M0 R to OBI R
             .obi_rready_i(obi_r_chans_mgr[i].obi_rready),

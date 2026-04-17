@@ -34,6 +34,7 @@ module obi_manager_param #(
     input logic                     obi_awe_i,
     input logic [NBytes-1:0]        obi_abe_i,
     input logic [DATA_WIDTH-1:0]    obi_awdata_i,
+    input logic [ID_WIDTH-1:0]      obi_aid_i,
     
     output logic                    obi_agnt_o,
 
@@ -59,6 +60,7 @@ module obi_manager_param #(
     assign obi_a.obi_awe      =   obi_awe_i;
     assign obi_a.obi_abe      =   obi_abe_i;
     assign obi_a.obi_awdata   =   obi_awdata_i;
+    assign obi_a.obi_aid      =   obi_aid_i;
     assign obi_a.obi_mid      =   MANAGER_ID;
 
 // OBI subordinate to manager signals
@@ -109,6 +111,7 @@ module obi_manager_param #(
     );
 
 // OBI aid generator
+    /*
     obi_aid_generator #(
         ID_WIDTH
     ) obi_aid_generator_inst (
@@ -117,6 +120,7 @@ module obi_manager_param #(
         .gen_next_i(gen_next),
         .obi_aid_o(obi_a.obi_aid)
     );
+    */
 
 // OBI A channel decoder 
     obi_a_decoder #(SUBORDINATES, ADDR_WIDTH, 2) obi_a_decoder_inst (

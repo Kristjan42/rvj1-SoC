@@ -19,6 +19,7 @@ module obi_xbar_testing_param_module #(
     input   logic [NBytes-1:0]      ifu_req_strobe_i,
     input   logic                   ifu_req_write_i,
     input   logic                   ifu_req_valid_i,
+    input   logic [ID_WIDTH-1:0]    ifu_req_id_i,
     output  logic                   ifu_req_ready_o,
 
     // response channel
@@ -36,6 +37,7 @@ module obi_xbar_testing_param_module #(
     input   logic [NBytes-1:0]      lsu_req_strobe_i,
     input   logic                   lsu_req_write_i,
     input   logic                   lsu_req_valid_i,
+    input   logic [ID_WIDTH-1:0]    lsu_req_id_i,
     output  logic                   lsu_req_ready_o,
 
     // response channel
@@ -52,6 +54,7 @@ module obi_xbar_testing_param_module #(
     input   logic [NBytes-1:0]      m2_req_strobe_i,
     input   logic                   m2_req_write_i,
     input   logic                   m2_req_valid_i,
+    input   logic [ID_WIDTH-1:0]    m2_req_id_i,
     output  logic                   m2_req_ready_o,
 
     // response channel
@@ -150,7 +153,8 @@ module obi_xbar_testing_param_module #(
     localparam int MANAGERS = 4;
     localparam int MID_WIDTH = $clog2(MANAGERS);
     localparam int SUBORDINATES = 2;
-    localparam int ID_WIDTH = 4;
+    localparam int FIFO_DEPTH = 1024;
+    localparam int ID_WIDTH = $clog2(FIFO_DEPTH * SUBORDINATES)+1;
     localparam int NBytes = DATA_WIDTH / 8;
     localparam bit [SUBORDINATES-1:0] [MANAGERS-1:0] Connectivity = {{4'b0011}, {4'b0111}};
    
@@ -170,7 +174,7 @@ module obi_xbar_testing_param_module #(
     assign obi_a_chans_mgr[0].obi_awe =  ifu_req_write_i;
     assign obi_a_chans_mgr[0].obi_abe = ifu_req_strobe_i;
     assign obi_a_chans_mgr[0].obi_awdata = ifu_req_data_i;
-    
+    assign obi_a_chans_mgr[0].obi_aid = ifu_req_id_i;
 
     // LSU
     assign obi_a_chans_mgr[1].obi_areq = lsu_req_valid_i;
@@ -179,6 +183,7 @@ module obi_xbar_testing_param_module #(
     assign obi_a_chans_mgr[1].obi_awe =  lsu_req_write_i;
     assign obi_a_chans_mgr[1].obi_abe = lsu_req_strobe_i;
     assign obi_a_chans_mgr[1].obi_awdata = lsu_req_data_i;
+    assign obi_a_chans_mgr[1].obi_aid = lsu_req_id_i;
 
     // M2
     assign obi_a_chans_mgr[2].obi_areq = m2_req_valid_i;
@@ -187,6 +192,7 @@ module obi_xbar_testing_param_module #(
     assign obi_a_chans_mgr[2].obi_awe =  m2_req_write_i;
     assign obi_a_chans_mgr[2].obi_abe = m2_req_strobe_i;
     assign obi_a_chans_mgr[2].obi_awdata = m2_req_data_i;
+    assign obi_a_chans_mgr[2].obi_aid = m2_req_id_i;
 
 
 
@@ -275,6 +281,7 @@ module obi_xbar_testing_param_module #(
         32,
         MANAGERS,
         SUBORDINATES,
+        FIFO_DEPTH,
         ID_WIDTH
     ) xbar_param (
         .clk_i(clk_i),
