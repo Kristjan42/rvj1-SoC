@@ -16,7 +16,7 @@ class ObiRequest(BaseTransaction):
     obi_awe: ObiAccess = ObiAccess.READ
     obi_abe: int = 0b1111
     obi_awdata: int = 0
-    obi_mid: int = 0
+    obi_mid: int = dataclasses.field(default=0, compare=False)
     obi_aid: int = dataclasses.field(default=0, compare=False)
 
 @dataclass(kw_only=True)

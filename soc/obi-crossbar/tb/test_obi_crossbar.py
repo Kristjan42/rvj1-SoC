@@ -34,8 +34,8 @@ from forastero_io.mapped.transaction import MappedAccess, MappedBackpressure, Ma
 
 
 def test_obi_crossbar_runner():
-    runner = get_test_runner("obi_xbar_testing_module")
-    runner.test(hdl_toplevel="obi_xbar_testing_module",test_module = "test_obi_crossbar", waves=WAVES)
+    runner = get_test_runner("obi_xbar_testing_param_module")
+    runner.test(hdl_toplevel="obi_xbar_testing_param_module",test_module = "test_obi_crossbar", waves=WAVES)
 
 class MappedResponseMonitor(BaseMonitor):
     async def monitor(self, capture):
@@ -46,7 +46,7 @@ class MappedResponseMonitor(BaseMonitor):
                 continue
             if self.io.get("valid") and self.io.get("ready"):
                 tran = MappedResponse(
-                    ident=self.io.get("id", 0),
+                    #ident=self.io.get("id", 0),
                     data=self.io.get("data", 0),
                     error=self.io.get("error", 0),
                 )
@@ -58,44 +58,44 @@ class ObiXbarTB(BaseBench):
     def __init__(self, dut):
         super().__init__(dut, clk=dut.clk_i, rst=dut.rstn_i, rst_active_high=False)
 
-        self.subordinates = 3
+        self.subordinates = 2
 
         self.mmio_device = Memory_device(self)
 
         self.ifu_response_backpressure_func = partial(ObiXbarTB.const_backpressure, cycles=0)
         self.lsu_response_backpressure_func = partial(ObiXbarTB.const_backpressure, cycles=0)
+        self.m2_response_backpressure_func = partial(ObiXbarTB.const_backpressure, cycles=0)
 
         self.s0_request_backpressure_func = partial(ObiXbarTB.const_backpressure, cycles=0)
         self.s1_request_backpressure_func = partial(ObiXbarTB.const_backpressure, cycles=0)
-        self.s2_request_backpressure_func = partial(ObiXbarTB.const_backpressure, cycles=0)
+        #self.s2_request_backpressure_func = partial(ObiXbarTB.const_backpressure, cycles=0)
 
         self.master_delay_func = partial(ObiXbarTB.const_backpressure, cycles=0)
         self.slave_delay_func = partial(ObiXbarTB.const_backpressure, cycles=0)
 
-        self.response_window = 100
-        self.request_window = 100
+        self.response_window =2000
+        self.request_window = 2000
     # ---------- IO ----------
 
         # IFU MAPPED io
         mapped_request_ifu_io = mapped.MappedRequestIO(dut, "ifu_req", IORole.RESPONDER) # Init io IFU->M0 as driver is MAPPED request driver
         mapped_response_ifu_io = mapped.MappedResponseIO(dut, "ifu_rsp", IORole.INITIATOR) # Rsp io IFU<-M0 as MAPPED monitor is on IFU
-        #mapped_response_bp_ifu_io = mapped.MappedResponseIO(dut, "ifu", IORole.INITIATOR) # Init io IFU->M0 as driver is MAPPED response backpressure driver
 
         # LSU MAPPED io
         mapped_request_lsu_io = mapped.MappedRequestIO(dut, "lsu_req", IORole.RESPONDER) # Init io LSU->M1 as driver is MAPPED request driver
         mapped_response_lsu_io = mapped.MappedResponseIO(dut, "lsu_rsp", IORole.INITIATOR) # Rsp io LSU<-M1 as MAPPED monitor is on LSU
 
-        # M0-S0 OBI io
-        obi_request_00_io = obi.ObiRequestIO(dut, "obi_00", IORole.INITIATOR ) # Rsp io M0->S0 as OBI monitor is on S0 
-        obi_response_00_io = obi.ObiResponseIO(dut, "obi_00", IORole.RESPONDER) # Init io M0<-S0 as driver is OBI response driver
+        # M2 MAPPED io
+        mapped_request_m2_io = mapped.MappedRequestIO(dut, "m2_req", IORole.RESPONDER) 
+        mapped_response_m2_io = mapped.MappedResponseIO(dut, "m2_rsp", IORole.INITIATOR) 
 
-        # M1-S0 OBI io
-        obi_request_11_io = obi.ObiRequestIO(dut, "obi_10", IORole.INITIATOR ) # Rsp io M1->S1 as OBI monitor is on S1 
-        obi_response_11_io = obi.ObiResponseIO(dut, "obi_10", IORole.RESPONDER) # Init io M1<-S1 as driver is OBI response driver
+        # S0 OBI io
+        s0_obi_request_io = obi.ObiRequestIO(dut, "s0_obi", IORole.INITIATOR ) # Rsp io Mi->S0 as OBI monitor is on S0 
+        s0_obi_response_io = obi.ObiResponseIO(dut, "s0_obi", IORole.RESPONDER) # Init io Mi<-S0 as driver is OBI response driver
 
-        # M1-S1 OBI io
-        obi_request_12_io = obi.ObiRequestIO(dut, "obi_11", IORole.INITIATOR ) # Rsp io M1->S2 as OBI monitor is on S2 
-        obi_response_12_io = obi.ObiResponseIO(dut, "obi_11", IORole.RESPONDER) # Init io M1<-S2 as driver is OBI response driver
+        # S1 OBI io
+        s1_obi_request_io = obi.ObiRequestIO(dut, "s1_obi", IORole.INITIATOR ) # Rsp io Mi->S1 as OBI monitor is on S1 
+        s1_obi_response_io = obi.ObiResponseIO(dut, "s1_obi", IORole.RESPONDER) # Init io Mi<-S1 as driver is OBI response driver
 
     # ---------- Drivers ----------
 
@@ -103,211 +103,210 @@ class ObiXbarTB(BaseBench):
 
         self.register(  # MAPPED IFU->M0 request signals driver
             "ifu_mapped_request_driver",
-            mapped.MappedRequestInitiator(self, mapped_request_ifu_io, self.clk, self.rst)
+            mapped.MappedRequestInitiator(self, mapped_request_ifu_io, self.clk, self.rst, name="ifu")
         )
-        #self.mapped_request_driver.subscribe(DriverEvent.ENQUEUE, self.push_request_reference)
-        #self.mapped_request_driver.subscribe(DriverEvent.ENQUEUE, self.drive_request_backpressure)
-        self.ifu_mapped_request_driver.subscribe(DriverEvent.ENQUEUE, self.ifu_push_request_reference)
-        self.ifu_mapped_request_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_request_backpressure_s0)
+        self.ifu_mapped_request_driver.subscribe(DriverEvent.ENQUEUE, self.push_request_reference)
+        self.ifu_mapped_request_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_request_backpressure)
 
         # IFU MAPPED response channel drivers
 
         self.register(  # MAPPED IFU->M0 response backpressure signal driver
             "ifu_mapped_response_backpressure_driver",
-            mapped.MappedResponseResponder(self, mapped_response_ifu_io, self.clk, self.rst)
+            mapped.MappedResponseResponder(self, mapped_response_ifu_io, self.clk, self.rst, name="ifu")
         )
 
         # LSU MAPPED request channel drivers
 
         self.register(  # MAPPED LSU->M1 request signal driver
             "lsu_mapped_request_driver",
-            mapped.MappedRequestInitiator(self, mapped_request_lsu_io, self.clk, self.rst)
+            mapped.MappedRequestInitiator(self, mapped_request_lsu_io, self.clk, self.rst, name="lsu")
         )
-        self.lsu_mapped_request_driver.subscribe(DriverEvent.ENQUEUE, self.lsu_push_request_reference)
-        # TODO not the best to sub both, better to check address and then drive 1, this works however may not yield reproducible randoms  
-        self.lsu_mapped_request_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_request_backpressure_s1)
-        self.lsu_mapped_request_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_request_backpressure_s2)
+        self.lsu_mapped_request_driver.subscribe(DriverEvent.ENQUEUE, self.push_request_reference)
+        self.lsu_mapped_request_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_request_backpressure)
 
         # LSU MAPPED response channel drivers
 
         self.register(  # MAPPED LSU->M1 response backpressure signal driver
             "lsu_mapped_response_backpressure_driver",
-            mapped.MappedResponseResponder(self, mapped_response_lsu_io, self.clk, self.rst)
+            mapped.MappedResponseResponder(self, mapped_response_lsu_io, self.clk, self.rst, name="lsu")
         )
 
-        # RAM-A (S0) OBI request channel drivers
+        # M2 MAPPED request channel drivers
 
-        self.register(  # OBI M0<-S0 request backpressure signal driver
+        self.register(  
+            "m2_mapped_request_driver",
+            mapped.MappedRequestInitiator(self, mapped_request_m2_io, self.clk, self.rst, name="m2")
+        )
+        self.m2_mapped_request_driver.subscribe(DriverEvent.ENQUEUE, self.push_request_reference)
+        self.m2_mapped_request_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_request_backpressure)
+
+        # M2 MAPPED response channel drivers
+
+        self.register(  # MAPPED LSU->M2 response backpressure signal driver
+            "m2_mapped_response_backpressure_driver",
+            mapped.MappedResponseResponder(self, mapped_response_m2_io, self.clk, self.rst, name="m2")
+        )
+
+        # S0 OBI request channel drivers
+
+        self.register(  # OBI Mi<-S0 request backpressure signal driver
             "s0_obi_request_backpressure_driver",
-            obi.ObiRequestBackpressureDriver(self, obi_request_00_io, self.clk, self.rst)
+            obi.ObiRequestBackpressureDriver(self, s0_obi_request_io, self.clk, self.rst, name="s0")
         )
 
-        # RAM-A (S0) OBI response channel drivers
+        # S0 OBI response channel drivers
 
-        self.register( # OBI M0<-S0 response signal driver
+        self.register( # OBI Mi<-S0 response signal driver
             "s0_obi_response_driver",
-            obi.ObiResponseDriver(self, obi_response_00_io, self.clk, self.rst)
+            obi.ObiResponseDriver(self, s0_obi_response_io, self.clk, self.rst, name="s0")
         )
-        self.s0_obi_response_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_response_backpressure_ifu)
-        self.s0_obi_response_driver.subscribe(DriverEvent.PRE_DRIVE, self.push_response_reference)
+        self.s0_obi_response_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_response_backpressure)
+        self.s0_obi_response_driver.subscribe(DriverEvent.ENQUEUE, self.push_response_reference)
 
-        # RAM-B (S1) OBI request channel drivers
+        # S1 OBI request channel drivers
 
-        self.register(  # OBI M1<-S1 request backpressure signal driver
+        self.register(  # OBI Mi<-S1 request backpressure signal driver
             "s1_obi_request_backpressure_driver",
-            obi.ObiRequestBackpressureDriver(self, obi_request_11_io, self.clk, self.rst)
+            obi.ObiRequestBackpressureDriver(self, s1_obi_request_io, self.clk, self.rst, name="s1")
         )
 
-        # RAM-B (S1) OBI response channel drivers
+        # S1 OBI response channel drivers
 
-        self.register( # OBI M1<-S1 response signal driver
+        self.register( # OBI Mi<-S1 response signal driver
             "s1_obi_response_driver",
-            obi.ObiResponseDriver(self, obi_response_11_io, self.clk, self.rst)
+            obi.ObiResponseDriver(self, s1_obi_response_io, self.clk, self.rst, name="s1")
         )
-        self.s1_obi_response_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_response_backpressure_lsu)
-        self.s1_obi_response_driver.subscribe(DriverEvent.PRE_DRIVE, self.push_response_reference)
+        self.s1_obi_response_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_response_backpressure)
+        self.s1_obi_response_driver.subscribe(DriverEvent.ENQUEUE, self.push_response_reference)
 
-        # UART (S2) OBI request channel drivers
-
-        self.register(  # OBI M1<-S2 request backpressure signal driver
-            "s2_obi_request_backpressure_driver",
-            obi.ObiRequestBackpressureDriver(self, obi_request_12_io, self.clk, self.rst)
-        )
-
-        # UART (S2) OBI response channel drivers
-
-        self.register( # OBI M1<-S2 response signal driver
-            "s2_obi_response_driver",
-            obi.ObiResponseDriver(self, obi_response_12_io, self.clk, self.rst)
-        )
-        self.s2_obi_response_driver.subscribe(DriverEvent.PRE_DRIVE, self.drive_response_backpressure_lsu)
-        self.s2_obi_response_driver.subscribe(DriverEvent.PRE_DRIVE, self.push_response_reference)
 
     # ---------- Monitors ----------
         
         # IFU monitor
+        
         self.register(  # MAPPED monitor (monitor)<IFU<-M0 for reading response channel signals
             "ifu_mapped_response_monitor",
-            MappedResponseMonitor(self, mapped_response_ifu_io, self.clk, self.rst),
-            sb_match_window=self.response_window
+            MappedResponseMonitor(self, mapped_response_ifu_io, self.clk, self.rst, name="ifu"),
+            sb_match_window=self.response_window,
+            sb_drain_policy=forastero.DrainPolicy.MON_AND_REF
         )
+        
 
         # LSU monitor
+        
         self.register(  # MAPPED monitor (monitor)<LSU<-M1 for reading response channel signals
             "lsu_mapped_response_monitor",
-            MappedResponseMonitor(self, mapped_response_lsu_io, self.clk, self.rst),
-            sb_match_window=self.response_window
+            MappedResponseMonitor(self, mapped_response_lsu_io, self.clk, self.rst, name="lsu"),
+            sb_match_window=self.response_window,
+            sb_drain_policy=forastero.DrainPolicy.MON_AND_REF
         )
 
-        # RAM-A (S0) monitor
-        self.register(  # OBI monitor M0->S0>(monitor) for reading request channel signals
+        # M2 monitor
+
+        self.register(  
+            "m2_mapped_response_monitor",
+            MappedResponseMonitor(self, mapped_response_m2_io, self.clk, self.rst, name="m2"),
+            sb_match_window=self.response_window,
+            sb_drain_policy=forastero.DrainPolicy.MON_AND_REF
+        )
+        
+        
+
+        # S0 monitor
+        self.register(  # OBI monitor Mi->S0>(monitor) for reading request channel signals
             "s0_obi_request_monitor",
-            obi.ObiRequestMonitor(self, obi_request_00_io, self.clk, self.rst)
+            obi.ObiRequestMonitor(self, s0_obi_request_io, self.clk, self.rst, name="s0"), 
+            sb_match_window=self.request_window,
+            sb_queues=("ifu", "lsu"),
+            sb_filter=self.filter,
+            sb_drain_policy=forastero.DrainPolicy.MON_AND_REF
         )
-        self.s0_obi_request_monitor.subscribe(MonitorEvent.CAPTURE, self.drive_response_s0)
+        self.s0_obi_request_monitor.subscribe(MonitorEvent.CAPTURE, self.drive_response)
 
-        # RAM-B (S1) monitor
-        self.register(  # OBI monitor M1->S1>(monitor) for reading request channel signals
+        # S1 monitor
+        self.register(  # OBI monitor Mi->S1>(monitor) for reading request channel signals
             "s1_obi_request_monitor",
-            obi.ObiRequestMonitor(self, obi_request_11_io, self.clk, self.rst)
+            obi.ObiRequestMonitor(self, s1_obi_request_io, self.clk, self.rst, name="s1"),
+            sb_match_window=self.request_window,
+            sb_queues=("ifu", "lsu", "m2"),
+            sb_filter=self.filter,
+            sb_drain_policy=forastero.DrainPolicy.MON_AND_REF
         )
-        self.s1_obi_request_monitor.subscribe(MonitorEvent.CAPTURE, self.drive_response_s1)
+        self.s1_obi_request_monitor.subscribe(MonitorEvent.CAPTURE, self.drive_response)
 
-        # UART (S2) monitor
-        self.register(  # OBI monitor M1->S2>(monitor) for reading request channel signals
-            "s2_obi_request_monitor",
-            obi.ObiRequestMonitor(self, obi_request_12_io, self.clk, self.rst)
-        )
-        self.s2_obi_request_monitor.subscribe(MonitorEvent.CAPTURE, self.drive_response_s2)
 
 # ---------- Subscriber methods ----------
 
     # Monitor reference push methods
 
-    def ifu_push_request_reference( # Pushes the request transaction signals reference from request driver input to the request monitor for comparison
+    def push_request_reference( # Pushes the request transaction signals reference from request driver input to the request monitor for comparison
         self, driver:mapped.MappedRequestInitiator, event:DriverEvent , obj:mapped.MappedRequest
     ):
-        monitor = "s" + self.ifu_request_decode(obj.address) + "_obi_request_monitor"
-        self.scoreboard.channels[monitor].push_reference(
+        monitor = ("s" + self.request_decode(obj.address)  + "_obi_request_monitor")
+        self.scoreboard.channels[monitor].push_reference( 
+            driver.name[0:driver.name.find("_")],
             obi.ObiRequest(   # Transaction signals to push and compare 
                 obi_aadr=obj.address,
                 obi_awe=(obj.mode - 1), # mapped READ value is 1 where obi READ is 0 (diffrence in the way classes were written)
                 obi_abe=obj.strobe,
                 obi_awdata=obj.data,
-                obi_aid=obj.ident,    
-                obi_mid=0           
+                #obi_aid=obj.ident,    
+                obi_mid=self.response_encode(driver.name[0:driver.name.find("_")])  
             )
         )
 
-    def lsu_push_request_reference( # Pushes the request transaction signals reference from request driver input to the request monitor for comparison
-        self, driver:mapped.MappedRequestInitiator, event:DriverEvent , obj:mapped.MappedRequest
-    ):
-        monitor = "s" + self.lsu_request_decode(obj.address) + "_obi_request_monitor"
-        self.log.info(msg=monitor + f" pushed reference address: " + '{:032b}'.format(obj.address))
-        self.scoreboard.channels[monitor].push_reference(
-            obi.ObiRequest(   # Transaction signals to push and compare 
-                obi_aadr=obj.address,
-                obi_awe=(obj.mode - 1), # mapped READ value is 1 where obi READ is 0 (diffrence in the way classes were written)
-                obi_abe=obj.strobe,
-                obi_awdata=obj.data,
-                obi_aid=obj.ident,    
-                obi_mid=1           
-            )
-        )
-
+    
     def push_response_reference(    # Pushes the response transaction signals reference from response driver input to the response monitor for comparison
         self, driver:obi.ObiResponseDriver, event:DriverEvent, obj:obi.ObiResponse
     ):
-        if obj.obi_mid == 0:
-            manager = "ifu"
-            self.log.info(msg=f"Pushed IFU response to scoreboard")
-        elif obj.obi_mid == 1:
-            manager = "lsu"
-            self.log.info(msg=f"Pushed LSU response to scoreboard")
+        manager = self.response_decode(obj.obi_mid)
         monitor = manager + "_mapped_response_monitor"
+        self.log.info("Pushing reference to " + monitor + " with mid: " + str(obj.obi_mid))
         self.scoreboard.channels[monitor].push_reference(
             mapped.MappedResponse(  # Transaction signals to push and compare
-                ident=obj.obi_rid,
+                #ident=0,
                 data=obj.obi_rdata,
                 error=obj.obi_rerr,
                 valid=True
             )
         )
-        
+
 
     # Response driver drive methods
 
-    def drive_response_s0( # Drives the response transaction upon the monitor capture of the request transaction
+    def drive_response( # Drives the response transaction upon the monitor capture of the request transaction
             self, monitor:obi.ObiRequestMonitor, event:MonitorEvent, obj:obi.ObiRequest
     ):  
-        self.log.info(msg=f"Captured request transaction on s0")
+        driver_name = getattr(self, monitor.name[0:monitor.name.find("_")] + "_obi_response_driver" )
+        self.log.info(msg=f"Captured request transaction on slave")
         match obj.obi_awe: # Check if request was a READ or WRITE transaction
             case obi.ObiAccess.READ:  # On READ, read data from address in mmio device
                 read = self.mmio_device.read(obj.obi_aadr)
                 err = 1 if read is None else 0
-                self.s0_obi_response_driver.enqueue(# Drive the read response transaction signals (data, error) 
+                driver_name.enqueue(# Drive the read response transaction signals (data, error) 
                     obi.ObiResponse(
                         valid_delay=self.slave_delay_func(self),
                         obi_rdata = read,
                         obi_rerr=err,
-                        obi_rid=obj.obi_aid,
+                        #obi_rid=obj.obi_aid,
                         obi_mid=obj.obi_mid
                     )
                 )
                 self.log.info(msg=f"Driving READ response on s0")
             case obi.ObiAccess.WRITE: # On WRITE, write the data to address in mmio device
                 err = self.mmio_device.write(obj.obi_aadr, obj.obi_awdata, obj.obi_abe)
-                self.s0_obi_response_driver.enqueue(# Drive the write response transaction signals (error)
+                driver_name.enqueue(# Drive the write response transaction signals (error)
                     obi.ObiResponse(
                         valid_delay=self.slave_delay_func(self),
                         obi_rdata = 0,
                         obi_rerr=err,
-                        obi_rid=obj.obi_aid,
+                        #obi_rid=obj.obi_aid,
                         obi_mid=obj.obi_mid
                     )
                 )
                 self.log.info(msg=f"Driving WRITE response on s0")
 
+    """
     def drive_response_s1( # Drives the response transaction upon the monitor capture of the request transaction
             self, monitor:obi.ObiRequestMonitor, event:MonitorEvent, obj:obi.ObiRequest
     ):
@@ -338,7 +337,9 @@ class ObiXbarTB(BaseBench):
                     )
                 )
                 self.log.info(msg=f"Driving WRITE response on s1")
+    """
 
+    """         
     def drive_response_s2( # Drives the response transaction upon the monitor capture of the request transaction
             self, monitor:obi.ObiRequestMonitor, event:MonitorEvent, obj:obi.ObiRequest
     ):
@@ -370,24 +371,29 @@ class ObiXbarTB(BaseBench):
                 )
                 self.log.info(msg=f"Driving WRITE response on s2")
     
+    """            
+
     # Backpressure drivers drive methods
      
-    def drive_response_backpressure_ifu( # Drives the ready signal IFU->M0
+    def drive_response_backpressure( # Drives the ready signal 
             self, driver:obi.ObiResponseDriver, event:DriverEvent , obj:obi.ObiResponse
     ):
-        self.ifu_mapped_response_backpressure_driver.enqueue(# Drives ready low for the specified duration of cycles
+        driver_name = getattr(self, self.response_decode(obj.obi_mid) + "_mapped_response_backpressure_driver")
+        bp_func = getattr(self, self.response_decode(obj.obi_mid) + "_response_backpressure_func")(self)
+        driver_name.enqueue(# Drives ready low for the specified duration of cycles
             mapped.MappedBackpressure(
                 ready=0,
-                cycles=self.ifu_response_backpressure_func(self)
+                cycles=bp_func
             ) 
         )
-        self.ifu_mapped_response_backpressure_driver.enqueue(# Drives ready high for 1 cycle to complete the transaction
+        driver_name.enqueue(# Drives ready high for 1 cycle to complete the transaction
             mapped.MappedBackpressure(
                 ready=1,
                 cycles=1
             )
         )
 
+    """
     def drive_response_backpressure_lsu( # Drives the ready signal LSU->M1
             self, driver:obi.ObiResponseDriver, event:DriverEvent , obj:obi.ObiResponse
     ):
@@ -403,24 +409,28 @@ class ObiXbarTB(BaseBench):
                 cycles=1
             )
         )
-
-    def drive_request_backpressure_s0( # Drives the agnt signal M0<-S0
+    """
+        
+    def drive_request_backpressure( # Drives the agnt signal
             self, driver:mapped.MappedRequestInitiator, event:DriverEvent , obj:mapped.MappedRequest
     ):
-        self.log.info(msg=f"Driving s0 request backpressure")
-        self.s0_obi_request_backpressure_driver.enqueue(# Drives agnt low for the specified duration of cycles
+        driver_name = getattr(self, "s" + self.request_decode(obj.address) + "_obi_request_backpressure_driver")
+        bp_func = getattr(self, "s" + self.request_decode(obj.address) + "_request_backpressure_func")(self)
+        self.log.info("Driving backpressure on: " + "s" + self.request_decode(obj.address) + "_obi_request_backpressure_driver")
+        driver_name.enqueue(# Drives agnt low for the specified duration of cycles
             obi.ObiBackpressure(
                 ready=0,
-                cycles=self.s0_request_backpressure_func(self)
+                cycles=bp_func
             ) 
         )
-        self.s0_obi_request_backpressure_driver.enqueue(# Drives agnt high for 1 cycle to complete the transaction
+        driver_name.enqueue(# Drives agnt high for 1 cycle to complete the transaction
             obi.ObiBackpressure(
                 ready=1,
                 cycles=1
             )
         )
 
+    """
     def drive_request_backpressure_s1( # Drives the agnt signal M1<-S1
             self, driver:mapped.MappedRequestInitiator, event:DriverEvent , obj:mapped.MappedRequest
     ):
@@ -454,20 +464,51 @@ class ObiXbarTB(BaseBench):
             )
         )
 
+    """
+
+# ---------- Monitor Filters ----------
+
+    def filter(self, monitor: obi.ObiRequestMonitor, event: MonitorEvent, obj: obi.ObiRequest) -> obi.ObiRequest | None:
+        self.log.info(obj)
+        for queue in self.scoreboard.channels[monitor.name]._q_ref.values():
+            if queue.level > 0:
+                ref = queue.peek()
+                self.log.info(ref)
+                if ref == obj:
+                    self.log.info("match found, mid: " + str(ref.obi_mid))
+                    obj.obi_mid = ref.obi_mid
+        return obj
+
+
 # ---------- Decoder methods ----------
 
-    def ifu_request_decode(self, address: int) -> str:
-        ifu_decode_dict = {
-            0 : "0"
+    def request_decode(self, address: int) -> str:
+        decode_dict = {
+            (int("0000_0000", 16), int("4000_0000", 16)) : "0",
+            (int("4000_0000", 16), int("4000_0000", 16)) : "1"
         }
-        range = int(math.ceil(math.log2(self.subordinates)))
-        binary = '{:032b}'.format(address)
-        #self.log.info(msg=f"address:" + str(address))
-        self.log.info(msg=f"address in binary:" + binary)
-        range_bin = binary[:range]
-        self.log.info(msg=f"int of range:" + str(int(range_bin, 2)))
-        return ifu_decode_dict[int(range_bin, 2)]
+        for base, mask in list(decode_dict.keys()):
+            if ((base & mask) == (address & mask) ):
+                slave_id = decode_dict[(base, mask)]
+        return slave_id
     
+    def response_encode(self, mid: int) -> str:
+        decode_dict  = {
+            "ifu" : 0,
+            "lsu" : 1,
+            "m2" : 2
+        }
+        return decode_dict[mid]
+    
+    def response_decode(self, mid: int) -> str:
+        decode_dict  = {
+            0: "ifu",
+            1: "lsu",
+            2: "m2"
+        }
+        return decode_dict[mid]
+    
+    """"
     def lsu_request_decode(self, address: int) -> str:
         lsu_decode_dict = {
             0 : "1",
@@ -480,6 +521,7 @@ class ObiXbarTB(BaseBench):
         range_bin = binary[:range]
         self.log.info(msg=f"int of range:" + str(int(range_bin, 2)))
         return lsu_decode_dict[int(range_bin, 2)]
+    """
 
 # ---------- Backpressure methods ----------
 
@@ -566,7 +608,7 @@ async def linear_read_seq(
 @forastero.requires("request_monitor", obi.ObiRequestMonitor)
 @forastero.requires("response_driver", obi.ObiResponseDriver)
 @forastero.requires("response_backpressure_driver", mapped.MappedResponseResponder)
-@forastero.requires("response_monitor", MappedResponseMonitor)
+#@forastero.requires("response_monitor", MappedResponseMonitor)
 async def linear_read_seq_bp(
     ctx: SeqContext,
     request_driver: MappedRequestInitiator,
@@ -574,22 +616,37 @@ async def linear_read_seq_bp(
     request_monitor: obi.ObiRequestMonitor,
     response_driver: obi.ObiResponseDriver,
     response_backpressure_driver: mapped.MappedResponseResponder,
-    response_monitor: MappedResponseMonitor,
-    backpressure_func: partial,
+    strb: int,
+    #response_monitor: MappedResponseMonitor,
+    #backpressure_func: partial,
     tb: ObiXbarTB,
     addresses: list[int] | None = None,
 ) -> None:
     for i, addr in enumerate(addresses):
-        async with ctx.lock(request_driver, request_backpressure_driver, request_monitor, response_driver, response_monitor, response_backpressure_driver):
+        async with ctx.lock(request_driver):
             request_driver.enqueue(
                 MappedRequest(
                     cycles=tb.master_delay_func(tb),
-                    ident=i+1,
+                    #ident=i+1,
                     address=addr,
-                    mode=MappedAccess.READ
+                    mode=MappedAccess.READ,
+                    strobe=strb
                 )
             )
-            """
+            #await request_monitor.wait_for(MonitorEvent.CAPTURE)
+        
+        
+        """
+        async with ctx.lock(request_monitor):
+            await request_monitor.wait_for(MonitorEvent.CAPTURE)
+
+        
+        async with ctx.lock(response_driver, request_backpressure_driver):
+            response_driver.wait_for(DriverEvent.POST_DRIVE)
+            request_backpressure_driver.wait_for(DriverEvent.POST_DRIVE)
+        
+
+            
             request_backpressure_driver.enqueue(# Drives agnt low for the specified duration of cycles
                 obi.ObiBackpressure(
                     ready=0,
@@ -604,7 +661,7 @@ async def linear_read_seq_bp(
                 DriverEvent.POST_DRIVE
             )
             """
-            await request_monitor.wait_for(MonitorEvent.CAPTURE)
+            #await request_monitor.wait_for(MonitorEvent.CAPTURE)
             #ctx.release(request_driver, request_backpressure_driver, request_monitor, response_driver, response_monitor, response_backpressure_driver)
 
 
@@ -726,7 +783,7 @@ async def random_write_seq(
 
 @ObiXbarTB.testcase()
 @ObiXbarTB.parameter("repeat", int, 10)
-async def ifu_linear_read_test(
+async def ifu_linear_read_test1_0(
     tb: ObiXbarTB,
     log,
     repeat
@@ -746,8 +803,8 @@ async def ifu_linear_read_test(
 
 @ObiXbarTB.testcase()
 @ObiXbarTB.parameter("repeat", int, 10)
-@ObiXbarTB.parameter("start_address", int, int("4000_0000", 16))
-async def lsu_linear_read_test(
+@ObiXbarTB.parameter("start_address", int, int("0000_0000", 16))
+async def lsu_linear_read_test1_1(
     tb: ObiXbarTB,
     log,
     repeat,
@@ -766,6 +823,351 @@ async def lsu_linear_read_test(
             addresses=address_sequence
         )
     )
+
+@ObiXbarTB.testcase()
+@ObiXbarTB.parameter("repeat", int, 10)
+@ObiXbarTB.parameter("start_address", int, int("0000_0000", 16))
+async def ifu_lsu_linear_read_test2_0(
+    tb: ObiXbarTB,
+    log,
+    repeat,
+    start_address
+): 
+    test_mem = gen_memory_data(start_address, range(1, repeat+1))
+    tb.mmio_device.flash(test_mem)
+    address_sequence = tb.gen_linear_address_seq(start_address, range(0, (repeat*4), 4))
+    m0 = tb.schedule(
+        linear_read_seq(
+            driver=tb.ifu_mapped_request_driver,
+            tb=tb,
+            addresses=address_sequence
+        )
+    )
+    m1 = tb.schedule(
+        linear_read_seq(
+            driver=tb.lsu_mapped_request_driver,
+            tb=tb,
+            addresses=address_sequence
+        )
+    )
+
+    await m0,m1
+
+@ObiXbarTB.testcase(timeout=80000)
+@ObiXbarTB.parameter("repeat", int, 10*1)
+@ObiXbarTB.parameter("start_address", int, int("0000_0000", 16))
+async def ifu_lsu_linear_read_bp_test2_1(
+    tb: ObiXbarTB,
+    log,
+    repeat,
+    start_address
+): 
+    test_mem = gen_memory_data(start_address, range(1, (repeat+1)))
+    tb.mmio_device.flash(test_mem)
+    address_sequence = tb.gen_linear_address_seq(start_address, range(0, (repeat*4), 4))
+    #adr2 = tb.gen_linear_address_seq(start_address, range(20, (repeat*4)*2, 4))
+
+    
+    tb.ifu_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,1))
+    tb.lsu_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,1))
+
+    tb.s0_request_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,2))
+        
+
+    tb.master_delay_func = partial(ObiXbarTB.random_backpressure, data=range(0,1))
+    tb.slave_delay_func = partial(ObiXbarTB.random_backpressure, data=range(0,1))
+    
+    m0 = tb.schedule(
+        linear_read_seq_bp(
+            request_driver=tb.ifu_mapped_request_driver,
+            request_backpressure_driver=tb.s0_obi_request_backpressure_driver,
+            request_monitor=tb.s0_obi_request_monitor,
+            response_driver=tb.s0_obi_response_driver,
+            response_backpressure_driver=tb.ifu_mapped_response_backpressure_driver,
+            strb=0,
+            tb=tb,
+            addresses=address_sequence
+        )
+    )
+    m1 = tb.schedule(
+        linear_read_seq_bp(
+            request_driver=tb.lsu_mapped_request_driver,
+            request_backpressure_driver=tb.s0_obi_request_backpressure_driver,
+            request_monitor=tb.s0_obi_request_monitor,
+            response_driver=tb.s0_obi_response_driver,
+            response_backpressure_driver=tb.lsu_mapped_response_backpressure_driver,
+            strb=1,
+            tb=tb,
+            addresses=address_sequence
+        )
+    )
+
+    await m0,m1
+
+
+
+@ObiXbarTB.testcase(timeout=8000000)
+@ObiXbarTB.parameter("repeat", int, 100*30)
+@ObiXbarTB.parameter("start_address", int, int("4000_0000", 16))
+async def ifu_lsu_m2_linear_read_bp_test3_0(
+    tb: ObiXbarTB,
+    log,
+    repeat,
+    start_address
+): 
+    test_mem = gen_memory_data(start_address, range(1, (repeat+1)))
+    tb.mmio_device.flash(test_mem)
+    address_sequence = tb.gen_linear_address_seq(start_address, range(0, (repeat*4), 4))
+    #adr2 = tb.gen_linear_address_seq(start_address, range(20, (repeat*4)*2, 4))
+
+    
+    tb.ifu_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,10))
+    tb.lsu_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,10))
+    tb.m2_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,10))
+
+    tb.s1_request_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,5))
+        
+
+    tb.master_delay_func = partial(ObiXbarTB.random_backpressure, data=range(0,10))
+    tb.slave_delay_func = partial(ObiXbarTB.random_backpressure, data=range(0,10))
+    
+
+    m0 = tb.schedule(
+        linear_read_seq_bp(
+            request_driver=tb.ifu_mapped_request_driver,
+            request_backpressure_driver=tb.s1_obi_request_backpressure_driver,
+            request_monitor=tb.s1_obi_request_monitor,
+            response_driver=tb.s1_obi_response_driver,
+            response_backpressure_driver=tb.ifu_mapped_response_backpressure_driver,
+            strb=0,
+            tb=tb,
+            addresses=address_sequence
+        )
+    )
+    m1 = tb.schedule(
+        linear_read_seq_bp(
+            request_driver=tb.lsu_mapped_request_driver,
+            request_backpressure_driver=tb.s1_obi_request_backpressure_driver,
+            request_monitor=tb.s1_obi_request_monitor,
+            response_driver=tb.s1_obi_response_driver,
+            response_backpressure_driver=tb.lsu_mapped_response_backpressure_driver,
+            strb=1,
+            tb=tb,
+            addresses=address_sequence
+        )
+    )
+    m2 = tb.schedule(
+        linear_read_seq_bp(
+            request_driver=tb.m2_mapped_request_driver,
+            request_backpressure_driver=tb.s1_obi_request_backpressure_driver,
+            request_monitor=tb.s1_obi_request_monitor,
+            response_driver=tb.s1_obi_response_driver,
+            response_backpressure_driver=tb.m2_mapped_response_backpressure_driver,
+            strb=2,
+            tb=tb,
+            addresses=address_sequence
+        )
+    )
+
+    await m0,m1,m2
+
+
+
+@ObiXbarTB.testcase(timeout=800000)
+@ObiXbarTB.parameter("transactions", int, 777)
+@ObiXbarTB.parameter("repeat", int, 3)
+@ObiXbarTB.parameter("start_address", int, int("4000_0000", 16))
+async def ifu_lsu_m2_linear_read_bp_test3_1(
+    tb: ObiXbarTB,
+    log,
+    transactions,
+    repeat,
+    start_address
+): 
+    
+    #adr2 = tb.gen_linear_address_seq(start_address, range(20, (repeat*4)*2, 4))
+
+    
+    tb.ifu_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,1))
+    tb.lsu_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,1))
+    tb.m2_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,1))
+
+    tb.s1_request_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,20))
+        
+
+    tb.master_delay_func = partial(ObiXbarTB.random_backpressure, data=range(0,100))
+    tb.slave_delay_func = partial(ObiXbarTB.random_backpressure, data=range(0,20))
+    
+    for i in range(repeat):
+        test_mem = gen_memory_data(start_address, range(1, (transactions+1)))
+        tb.mmio_device.flash(test_mem)
+        address_sequence = tb.gen_linear_address_seq(start_address, range(0, (transactions*4), 4))
+
+        m0 = tb.schedule(
+            linear_read_seq_bp(
+                request_driver=tb.ifu_mapped_request_driver,
+                request_backpressure_driver=tb.s1_obi_request_backpressure_driver,
+                request_monitor=tb.s1_obi_request_monitor,
+                response_driver=tb.s1_obi_response_driver,
+                response_backpressure_driver=tb.ifu_mapped_response_backpressure_driver,
+                strb=0,
+                tb=tb,
+                addresses=address_sequence
+            )
+        )
+        m1 = tb.schedule(
+            linear_read_seq_bp(
+                request_driver=tb.lsu_mapped_request_driver,
+                request_backpressure_driver=tb.s1_obi_request_backpressure_driver,
+                request_monitor=tb.s1_obi_request_monitor,
+                response_driver=tb.s1_obi_response_driver,
+                response_backpressure_driver=tb.lsu_mapped_response_backpressure_driver,
+                strb=1,
+                tb=tb,
+                addresses=address_sequence
+            )
+        )
+        m2 = tb.schedule(
+            linear_read_seq_bp(
+                request_driver=tb.m2_mapped_request_driver,
+                request_backpressure_driver=tb.s1_obi_request_backpressure_driver,
+                request_monitor=tb.s1_obi_request_monitor,
+                response_driver=tb.s1_obi_response_driver,
+                response_backpressure_driver=tb.m2_mapped_response_backpressure_driver,
+                strb=2,
+                tb=tb,
+                addresses=address_sequence
+            )
+        )
+
+        await m0,m1,m2
+        transactions = int(transactions + (transactions/2))
+        try:
+            await ClockCycles(tb.clk, 100)
+            #await tb.m2_mapped_request_driver.idle()
+            #await tb.lsu_mapped_request_driver.idle()
+            #await tb.ifu_mapped_request_driver.idle()
+            await tb.scoreboard.drain()
+            await ClockCycles(tb.clk, 500)
+            await tb.scoreboard.drain()
+            await ClockCycles(tb.clk, 500)
+            #transactions = transactions + 10
+            await tb.reset()
+        except Exception as e:
+            tb._orch_log.error(f"Caught exception during reset: {e}")
+            raise e
+        
+
+
+@ObiXbarTB.testcase(timeout=800000)
+@ObiXbarTB.parameter("transactions", int, 150)
+@ObiXbarTB.parameter("repeat", int, 8)
+@ObiXbarTB.parameter("start_address_s0", int, int("0000_0000", 16))
+@ObiXbarTB.parameter("start_address_s1", int, int("4000_0000", 16))
+async def test4_0_3m_2s_r(
+    tb: ObiXbarTB,
+    log,
+    transactions,
+    repeat,
+    start_address_s0,
+    start_address_s1
+
+): 
+    
+    #adr2 = tb.gen_linear_address_seq(start_address, range(20, (repeat*4)*2, 4))
+
+    
+    tb.ifu_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,3))
+    tb.lsu_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,3))
+    tb.m2_response_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,3))
+
+    tb.s0_request_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,3))
+    tb.s1_request_backpressure_func = partial(ObiXbarTB.random_backpressure, data=range(0,3))
+        
+
+    tb.master_delay_func = partial(ObiXbarTB.random_backpressure, data=range(0,3))
+    tb.slave_delay_func = partial(ObiXbarTB.random_backpressure, data=range(0,3))
+    
+    for i in range(repeat):
+        test_mem = gen_memory_data(start_address_s0, range(1, int(transactions*2+1)))
+        test_mem.update(gen_memory_data(start_address_s1, range(1, int(transactions*2+1))))
+        tb.mmio_device.flash(test_mem)
+        address_sequence = tb.gen_linear_address_seq(start_address_s0, range(0, int(transactions)*4, 4))
+        address_sequence.extend(tb.gen_linear_address_seq(start_address_s1, range(0, (int(transactions)*4), 4)))
+
+        tb.random.shuffle(address_sequence)
+        m0 = tb.schedule(
+            linear_read_seq_bp(
+                request_driver=tb.ifu_mapped_request_driver,
+                request_backpressure_driver=tb.s1_obi_request_backpressure_driver,
+                request_monitor=tb.s1_obi_request_monitor,
+                response_driver=tb.s1_obi_response_driver,
+                response_backpressure_driver=tb.ifu_mapped_response_backpressure_driver,
+                strb=0,
+                tb=tb,
+                addresses=address_sequence
+            )
+        )
+        tb.random.shuffle(address_sequence)
+        m1 = tb.schedule(
+            linear_read_seq_bp(
+                request_driver=tb.lsu_mapped_request_driver,
+                request_backpressure_driver=tb.s1_obi_request_backpressure_driver,
+                request_monitor=tb.s1_obi_request_monitor,
+                response_driver=tb.s1_obi_response_driver,
+                response_backpressure_driver=tb.lsu_mapped_response_backpressure_driver,
+                strb=1,
+                tb=tb,
+                addresses=address_sequence
+            )
+        )
+        m2 = tb.schedule(
+            linear_read_seq_bp(
+                request_driver=tb.m2_mapped_request_driver,
+                request_backpressure_driver=tb.s1_obi_request_backpressure_driver,
+                request_monitor=tb.s1_obi_request_monitor,
+                response_driver=tb.s1_obi_response_driver,
+                response_backpressure_driver=tb.m2_mapped_response_backpressure_driver,
+                strb=2,
+                tb=tb,
+                addresses=tb.gen_linear_address_seq(start_address_s1, range(0, (transactions*4), 4))
+            )
+        )
+
+        await m0,m1,m2
+        transactions = int(transactions + (transactions/2))
+        try:
+            await ClockCycles(tb.clk, 100)
+            #await tb.m2_mapped_request_driver.idle()
+            #await tb.lsu_mapped_request_driver.idle()
+            #await tb.ifu_mapped_request_driver.idle()
+            await tb.scoreboard.drain()
+            await ClockCycles(tb.clk, 500)
+            await tb.scoreboard.drain()
+            await ClockCycles(tb.clk, 500)
+            #transactions = transactions + 10
+            await tb.reset()
+        except Exception as e:
+            tb._orch_log.error(f"Caught exception during reset: {e}")
+            raise e
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -966,14 +1368,12 @@ async def lsu_random_write_all_test(
 
 @ObiXbarTB.testcase(timeout=800000)
 @ObiXbarTB.parameter("repeat", int, 50)
-@ObiXbarTB.parameter("start_address_s1", int, int("0000_0000", 16))
-@ObiXbarTB.parameter("start_address_s2", int, int("4000_0000", 16))
+@ObiXbarTB.parameter("start_address", int, int("0000_0000", 16))
 async def lsu_random_read_write_all_test(
     tb: ObiXbarTB,
     log,
     repeat,
-    start_address_s1,
-    start_address_s2
+    start_address
 ):  
     log.info(msg=f"Test started")
 

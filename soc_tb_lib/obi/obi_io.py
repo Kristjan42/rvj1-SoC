@@ -14,7 +14,7 @@ class ObiRequestIO(BaseIO):
             dut=dut,
             name=name,
             role=role,
-            init_sigs=["aaddr", "awe", "abe", "awdata", "aid", "mid", "areq"],
+            init_sigs=["aadr", "awe", "abe", "awdata", "aid", "mid", "areq"],
             resp_sigs=["agnt"],
             io_style=io_style,
         )
