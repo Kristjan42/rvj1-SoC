@@ -24,10 +24,10 @@ module lf_lfsr_prng#(
         for (int i=0; i<LFSR_WIDTH; i++) begin // interleave 
             feedback = ^(state & TAP_MASK);
             if (i < PRN_WIDTH) begin
-                prn_o[i] = state[0]; 
+                prn_o[i] = state[LFSR_WIDTH-1]; 
             end               
-            state = {feedback, state[LFSR_WIDTH-1:1]};
-            //state = {state[LFSR_WIDTH-2:0], feedback};
+            //state = {feedback, state[LFSR_WIDTH-1:1]};
+            state = {state[LFSR_WIDTH-2:0], feedback};
         end
         state_o = state;
     end
