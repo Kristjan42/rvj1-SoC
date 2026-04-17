@@ -48,6 +48,22 @@ module obi_xbar_testing_module #(
     output  logic [ID_WIDTH-1:0]    lsu_rsp_id_o,
     input   logic                   lsu_rsp_ready_i,
 
+// M2 signals
+    // request channel
+    input   logic [ADDR_WIDTH-1:0]  m2_req_addr_i,
+    input   logic [DATA_WIDTH-1:0]  m2_req_data_i,
+    input   logic [NBytes-1:0]      m2_req_strobe_i,
+    input   logic                   m2_req_write_i,
+    input   logic                   m2_req_valid_i,
+    output  logic                   m2_req_ready_o,
+
+    // response channel
+    output  logic [ADDR_WIDTH-1:0]  m2_rsp_data_o,
+    output  logic                   m2_rsp_error_o,
+    output  logic                   m2_rsp_valid_o,
+    output  logic [ID_WIDTH-1:0]    m2_rsp_id_o,
+    input   logic                   m2_rsp_ready_i,
+
 /*
 // OBI RAM A port signals
     // request channel
@@ -115,7 +131,20 @@ module obi_xbar_testing_module #(
     output logic                            s0_obi_rready_o,
     input  logic                            s0_obi_rvalid_i,
     input  logic [DATA_WIDTH-1:0]           s0_obi_rdata_i,
-    input  logic                            s0_obi_rerr_i
+    input  logic                            s0_obi_rerr_i,
+
+// S1
+    output logic [ADDR_WIDTH-1:0]           s1_obi_aadr_o,
+    output logic                            s1_obi_awe_o,
+    output logic [NBytes-1:0]               s1_obi_abe_o,
+    output logic [DATA_WIDTH-1:0]           s1_obi_awdata_o,
+    output logic                            s1_obi_areq_o,
+    input  logic                            s1_obi_agnt_i,
+
+    output logic                            s1_obi_rready_o,
+    input  logic                            s1_obi_rvalid_i,
+    input  logic [DATA_WIDTH-1:0]           s1_obi_rdata_i,
+    input  logic                            s1_obi_rerr_i
 
 );
 
@@ -195,8 +224,8 @@ parameter int NBytes = DATA_WIDTH / 8;
     obi_crossbar #(
         32,
         32,
+        4,
         2,
-        1,
         4
     ) xbar (
         .clk_i(clk_i),
@@ -229,6 +258,21 @@ parameter int NBytes = DATA_WIDTH / 8;
         .m1_rsp_id_o(lsu_rsp_id_o),
         .m1_rsp_valid_o(lsu_rsp_valid_o),
 
+        // M2
+        .m2_req_addr_i(m2_req_addr_i),
+        .m2_req_data_i(m2_req_data_i),
+        .m2_req_strobe_i(m2_req_strobe_i),
+        .m2_req_write_i(m2_req_write_i),
+        .m2_req_ready_o(m2_req_ready_o),
+        .m2_req_valid_i(m2_req_valid_i),
+        
+        .m2_rsp_data_o(m2_rsp_data_o),
+        .m2_rsp_error_o(m2_rsp_error_o),
+        .m2_rsp_ready_i(m2_rsp_ready_i),
+        .m2_rsp_id_o(m2_rsp_id_o),
+        .m2_rsp_valid_o(m2_rsp_valid_o),
+
+
         // S0
         .s0_obi_aadr_o(s0_obi_aadr_o),
         .s0_obi_awe_o(s0_obi_awe_o),
@@ -240,7 +284,21 @@ parameter int NBytes = DATA_WIDTH / 8;
         .s0_rsp_ready_o(s0_obi_rready_o),
         .s0_rsp_write_i(s0_obi_rvalid_i),
         .s0_obi_rdata_i(s0_obi_rdata_i),
-        .s0_obi_rerr_i(s0_obi_rerr_i)
+        .s0_obi_rerr_i(s0_obi_rerr_i),
+
+        // S1
+        .s1_obi_aadr_o(s1_obi_aadr_o),
+        .s1_obi_awe_o(s1_obi_awe_o),
+        .s1_obi_abe_o(s1_obi_abe_o),
+        .s1_obi_awdata_o(s1_obi_awdata_o),
+        .s1_req_valid_o(s1_obi_areq_o),
+        .s1_req_read_i(s1_obi_agnt_i),    
+
+
+        .s1_rsp_ready_o(s1_obi_rready_o),
+        .s1_rsp_write_i(s1_obi_rvalid_i),
+        .s1_obi_rdata_i(s1_obi_rdata_i),
+        .s1_obi_rerr_i(s1_obi_rerr_i)
 
         /*
         // UART
