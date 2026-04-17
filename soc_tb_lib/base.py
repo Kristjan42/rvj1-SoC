@@ -11,7 +11,7 @@ RTL_DIRS = (
     "/foss/designs/rvj1-SoC/soc/obi-a-decoder/rtl/",
     "/foss/designs/rvj1-SoC/soc/obi-link-selector/rtl/",
     "/foss/designs/rvj1-SoC/soc/obi-manager/rtl/",
-    #"/foss/designs/rvj1-SoC/soc/obi-crossbar/rtl/",
+    "/foss/designs/rvj1-SoC/soc/obi-crossbar/rtl/",
     "/foss/designs/rvj1-SoC/soc/obi-crossbar/test/"
 )
 LANGUAGE = os.getenv("HDL_TOPLEVEL_LANG", "verilog").lower().strip()
@@ -58,7 +58,7 @@ def get_test_runner(hdl_top):
     "/foss/designs/rvj1-SoC/soc/obi-a-decoder/rtl/",
     "/foss/designs/rvj1-SoC/soc/obi-link-selector/rtl/",
     "/foss/designs/rvj1-SoC/soc/obi-manager/rtl/",
-    #"/foss/designs/rvj1-SoC/soc/obi-crossbar/rtl/",
+    "/foss/designs/rvj1-SoC/soc/obi-crossbar/rtl/",
     "/foss/designs/rvj1-SoC/soc/obi-crossbar/test/"],
         build_args=build_args,
         hdl_toplevel=hdl_top,
